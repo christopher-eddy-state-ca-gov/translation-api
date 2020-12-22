@@ -13,19 +13,20 @@ let Logger = {};
 
 const getApiKey = (conf) => {
   let key = '';
-  if(!conf.GoogleDirect){
+  if(!conf.GoogleSecret){
     key =  conf.CDTTranslationKey;
   }
   else{
-    key =  conf.GoogleKey;
+    key =  conf.GoogleSecret;
   }
   return key;
 };
 
 exports.createConnectionOption = (conf, _Logger) => {
   Logger = _Logger;
+  Logger.log(`conf = ${conf.GoogleSecret}`);
   return new Promise((resolve, reject) => {
-   if(conf.GoogleDirect != 1){
+   if(!conf.GoogleSecret){
       resolve({
           protocol: 'https:',
           method: 'POST',
@@ -132,7 +133,7 @@ exports.callTranslateApi = (opts, data, _Logger, conf) => {
         Logger.log(`body=${body}`);
         let json = JSON.parse(body);
         //HACK convert json to be google format from cdt format
-        if(conf.GoogleDirect == "0"){
+        if(!conf.GoogleSecret){
           const jsonNew = {};
           jsonNew["data"] = {};
           jsonNew["data"]["translations"] = json["data"];

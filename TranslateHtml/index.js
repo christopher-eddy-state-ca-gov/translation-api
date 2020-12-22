@@ -30,7 +30,7 @@ module.exports = async function (context, req) {
     const html = req.body;
 
     process.env["targetLanguage"] = req.query.targetLanguage;
-    process.env["GoogleDirect"] = req.query["GoogleDirect"] ? 1 : 0;
+    process.env["GoogleSecret"] = req.query["GoogleSecret"] ? req.query["GoogleSecret"] : '';
     const Translator = createHtmlPageTranslator(process.env, context);
     let translatedHtmlResponse = '';
     Translator.translatePage(
