@@ -13,8 +13,8 @@ let Logger = {};
 
 const getApiKey = (conf) => {
   let key = '';
-  if(!conf.GoogleDirect){
-    key =  conf.CDTTranslationKey;
+  if(!conf.GoogleSecret){
+    key =  conf.app_CDTTranslationKey;
   }
   else{
     key =  conf.GoogleKey;
@@ -29,8 +29,8 @@ exports.createConnectionOption = (conf, _Logger) => {
       resolve({
           protocol: 'https:',
           method: 'POST',
-          host: conf.CDTTranslationHost,
-          path: `${conf.CDTTranslationPath}`,
+          host: conf.app_CDTTranslationHost,
+          path: `${conf.app_CDTTranslationPath}`,
           headers: {
           'Content-Type': 'application/json; charset=utf-8'
           }
@@ -57,7 +57,7 @@ const DEFAULT_SELECTORS = ["body"];
 const extractTexts = (html, conf) => {
   return new Promise((resolve, reject) => {
     try {
-      const selectors = conf.translationSelectors || DEFAULT_SELECTORS;
+      const selectors = conf.app_translationSelectors || DEFAULT_SELECTORS;
       const $ = cheerio.load(html);
       const q = [];
 
@@ -77,7 +77,7 @@ const extractTexts = (html, conf) => {
 exports.replaceTexts = (html, translated, conf) => {
   return new Promise((resolve, reject) => {
     try {
-      const selectors = conf.translationSelectors || DEFAULT_SELECTORS;
+      const selectors = conf.app_translationSelectors || DEFAULT_SELECTORS;
       const $ = cheerio.load(html);
 
       selectors.forEach((sel) => {

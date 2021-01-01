@@ -15,13 +15,13 @@ exports.createHtmlPageTranslator = (conf, _Logger) => {
   _Logger.log(`##################################################`);
   Logger = _Logger;
   Logger.log("In createHtmlPage");
-  const selectors = conf.translationSelectors;
-  const maxTextPerRequest = conf.maxTextPerRequest;
-  const domBreakdownThreshold = conf.domBreakdownThreshold;
+  const selectors = conf.app_translationSelectors;
+  const app_maxTextPerRequest = conf.app_maxTextPerRequest;
+  const app_domBreakdownThreshold = conf.app_domBreakdownThreshold;
 
   const translatePage = (html, lang, callback) => {
     const page = exports.loadPage(html, conf, Logger);
-    page.translateAll(selectors, lang, maxTextPerRequest, domBreakdownThreshold, (err, translatedHtml) => {
+    page.translateAll(selectors, lang, app_maxTextPerRequest, app_domBreakdownThreshold, (err, translatedHtml) => {
       if (err) {
         callback(err);
       } else {
@@ -38,7 +38,7 @@ exports.loadPage = (html, conf, _Logger) => {
   const $ = cheerio.load(html);
 
   const translatePage = (lang, callback) => {
-    translateAll(conf.translationSelectors.split(";"), lang, conf.maxTextPerRequest, conf.domBreakdownThreshold, (err, translatedHtml) => {
+    translateAll(conf.app_translationSelectors.split(";"), lang, conf.app_maxTextPerRequest, conf.app_domBreakdownThreshold, (err, translatedHtml) => {
       if (err) {
         callback(err);
       } else {
@@ -55,11 +55,11 @@ exports.loadPage = (html, conf, _Logger) => {
    *
    */
   const translateAll = (selectors, lang, limit, threshold, callback) => {
-    const maxPageSize = conf.maxPageSize || DEFAULT_MAX_PAGESIZE;
+    const app_maxPageSize = conf.app_maxPageSize || DEFAULT_MAX_PAGESIZE;
     const all = sortOutBySize(selectors, limit, threshold);
     logSorted(all);
     const total = totalComponentSize(all);
-    if (total > maxPageSize) {
+    if (total > app_maxPageSize) {
       Logger.log('TRANSLATE ALL TOO LARGE PAGE: ' + total);
       callback({ error: 'Too Large Page', size: total });
       return;
@@ -130,7 +130,7 @@ exports.loadPage = (html, conf, _Logger) => {
   const createQueryString = (components, lang) => {
     Logger.log(`createQueryString entered`);
     const Contents = extractTextForTranslation(components);
-    const q = `TargetLanguageCode=${conf.targetLanguage}&ServiceKey=${conf.CDTTranslationKey}&Contents=${encodeURIComponent(Contents)}`;
+    const q = `TargetLanguageCode=${conf.targetLanguage}&ServiceKey=${conf.app_CDTTranslationKey}&Contents=${encodeURIComponent(Contents)}`;
     Logger.log(`createQueryString q=${q}`);
     return q;
   };
