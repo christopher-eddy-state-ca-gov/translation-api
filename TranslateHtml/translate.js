@@ -1,7 +1,7 @@
 const https = require( 'https' );
 const cheerio = require( 'cheerio' );
 const {google} = require('googleapis');
-
+const { GetGoogleApiKey } = require('./GoogleToken.js');
 
 const setLangAttribute = (html) => {
 };
@@ -13,19 +13,25 @@ let Logger = {};
 
 const getApiKey = (conf) => {
   let key = '';
-  if(!conf.GoogleSecret){
+  Logger.log(`Keyb=${key}`)
+  if(!conf.UseGoogle){
     key =  conf.app_CDTTranslationKey;
   }
   else{
-    key =  conf.GoogleKey;
+    Logger.log(`Keyc=${key}`)
+   try{ key =  GetGoogleApiKey(Logger);
+   }catch(e){ Logger.log(`error=${e}`) }
+    Logger.log(`Keyd=${key}`)
   }
+  Logger.log(`Keya=${key}`)
   return key;
 };
 
 exports.createConnectionOption = (conf, _Logger) => {
   Logger = _Logger;
+  Logger.log(`conf = ${conf.UseGoogle}`);
   return new Promise((resolve, reject) => {
-   if(conf.GoogleDirect != 1){
+   if(!conf.UseGoogle){
       resolve({
           protocol: 'https:',
           method: 'POST',
@@ -37,7 +43,9 @@ exports.createConnectionOption = (conf, _Logger) => {
       });
     }
     else{
-      const key = getApiKey(conf);
+      Logger.log(`xxxy=`)
+      const key = getApiKey(conf).then((key) => {
+      Logger.log(`KEY=${key}`)
       resolve({
         protocol: 'https:',
         method: 'POST',
@@ -47,7 +55,7 @@ exports.createConnectionOption = (conf, _Logger) => {
           'Authorization': 'Bearer ' + key,
           'Content-Type': 'application/json; charset=utf-8'
         }
-      });
+      });});
     }
   });
 };
@@ -132,7 +140,7 @@ exports.callTranslateApi = (opts, data, _Logger, conf) => {
         Logger.log(`body=${body}`);
         let json = JSON.parse(body);
         //HACK convert json to be google format from cdt format
-        if(conf.GoogleDirect == "0"){
+        if(!conf.UseGoogle){
           const jsonNew = {};
           jsonNew["data"] = {};
           jsonNew["data"]["translations"] = json["data"];

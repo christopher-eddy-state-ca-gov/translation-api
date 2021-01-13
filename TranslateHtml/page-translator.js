@@ -85,16 +85,16 @@ exports.loadPage = (html, conf, _Logger) => {
 
   const translatePortion = (components, lang, apiOpts, i) => {
     let data = '';
-    Logger.log(`GoogleDirect=${conf.GoogleDirect}`);
-    if(conf.GoogleDirect == "1"){
+    Logger.log(`UseGoogle=${conf.UseGoogle}`);
+    if(conf.UseGoogle){
       Logger.log(`Huhhhhhh=${data}`);
       data = createPostData(components, lang);
     }
     else{
       data = createQueryString(components, lang);
-      Logger.log(`GoogleDirectdata=${data}`);
+      Logger.log(`UseGoogledata=${data}`);
       apiOpts["path"] += `?${data}`;
-      Logger.log(`GoogleDirectdata apipath=${apiOpts["path"]}`);
+      Logger.log(`UseGoogledata apipath=${apiOpts["path"]}`);
       data = '';
     }
    

@@ -15,7 +15,7 @@ module.exports = async function (context, req) {
  
     const html = req.body;
     process.env["targetLanguage"] = req.query.targetLanguage;
-    process.env["GoogleSecret"] = req.query["GoogleSecret"] ? req.query["GoogleSecret"] : '';
+    process.env["UseGoogle"] = req.query["UseGoogle"] ? req.query["UseGoogle"] : '';
 
     const Translator = createHtmlPageTranslator(process.env, context);
     let translatedHtmlResponse = '';
